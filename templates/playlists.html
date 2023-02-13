@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>select playlist</title>
+</head>
+<body>
+<ul>
+{% for playlist in playlists %}
+    <li>{{ playlist["name"] }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>
