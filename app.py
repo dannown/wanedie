@@ -35,5 +35,16 @@ def index():
     return render_template("playlists.html", playlists=playlists["items"])
 
 
+@app.route('/playlist_from_playlist/<playlist_id>')
+def playlist_from_playlist(playlist_id):
+    playlist = sp.playlist(playlist_id)
+    tracks = [itm["track"] for itm in playlist["tracks"]["items"]]
+    audio_features = sp.audio_features([track["id"] for track in tracks])
+    for i in range(len(tracks)):
+        tracks[i]["af"] = audio_features[i]
+    tracks.sort(reverse=True, key=lambda x: x["af"]["danceability"] + x['af']['energy'] + x['af']['valence'])
+    return render_template("from_playlist.html", tracks=tracks)
+
+
 if __name__ == '__main__':
     app.run(port=5050)

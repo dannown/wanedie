@@ -7,7 +7,7 @@
 <body>
 <ul>
 {% for playlist in playlists %}
-    <li>{{ playlist["name"] }}</li>
+    <li><a href="{{ url_for("playlist_from_playlist", playlist_id=playlist.id) }}">{{ playlist["name"] }}</a></li>
 {% endfor %}
 </ul>
 </body>
