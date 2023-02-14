@@ -74,12 +74,12 @@ def load_tracks(playlist):
     return tracks
 
 
-
-
-@app.route('/remove_track_from_working_playlist/<track_id>')
-def remove_track_from_working_playlist(track_id):
+@app.route('/remove_track_from_working_playlist', methods=['POST'])
+def remove_track_from_working_playlist():
+    track_id = request.json['track_id']
     sp.playlist_remove_all_occurrences_of_items(g.working_playlist["id"], ["spotify:track:" + track_id])
-    return redirect("/")
+    load_working_playlist()
+    return edit_working_playlist(full=False)
 
 
 @app.route('/new_playlist', methods=['GET', 'POST'])
@@ -91,9 +91,13 @@ def new_playlist():
         session[SESSION_WORKING_PLAYLIST_ID] = fresh_playlist["id"]
         return redirect('/')
     return render_template("new_playlist.html")
-def edit_working_playlist():
+
+
+def edit_working_playlist(full=True):
     playlist = g.working_playlist
     tracks = load_tracks(playlist)
+    if not full:
+        return render_template("edit_playlist_table.html", playlist=playlist, tracks=tracks)
     return render_template("edit_playlist.html", playlist=playlist, tracks=tracks)
 
 
@@ -105,11 +109,13 @@ def set_working_playlist(playlist_id):
 
 @app.route('/playlist_from_playlist/<playlist_id>', methods=['GET', 'POST'])
 def playlist_from_playlist(playlist_id):
-    if request.method == 'POST':
-        sp.playlist_add_items(g.working_playlist['id'], ["spotify:track:" + request.form['add_track_id']])
-        redirect(url_for("playlist_from_playlist", playlist_id=playlist_id))
     playlist = sp.playlist(playlist_id)
     tracks = load_tracks(playlist)
+    if request.method == 'POST':
+        sp.playlist_add_items(g.working_playlist['id'], ["spotify:track:" + request.json['track_id']])
+        load_working_playlist()
+        tracks = load_tracks(playlist)
+        return render_template("from_playlist_table.html", tracks=tracks, playlist=playlist)
     return render_template("from_playlist.html", tracks=tracks, playlist=playlist)
 
 

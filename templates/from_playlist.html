@@ -2,43 +2,24 @@
 {% block body %}
     <p>Adding tracks from playlist {{ playlist.name }} (<a
             href="{{ url_for("select_playlist_for_from_playlist") }}">change</a>)</p>
-<table>
-    <tr>
-        <th>track name</th>
-        <th>artist</th>
-        <th>tempo</th>
-        <th>danceability</th>
-        <th>energy</th>
-        <th>valence</th>
-        <th>time signature</th>
-        <th>remove?</th>
-    </tr>
-    {% for track in tracks %}
-        <tr>
-            <td>{{ track["name"] }}</td>
-            <td>({{ track["artists"][0]["name"] }})</td>
-            <td>
-                {% if (180 - track.af.tempo)|abs < 1 or (90 - track.af.tempo)|abs < 0.5 %}
-                    ✅
-                {% elif (180 - track.af.tempo)|abs < 2 or (90 - track.af.tempo)|abs < 1 %}
-                    🟡
-                {% endif %}
-                {{ track["af"]["tempo"] }}</td>
-            <td>{{ track["af"]["danceability"] }}</td>
-            <td>{{ track["af"]["energy"] }}</td>
-            <td>{{ track["af"]["valence"] }}</td>
-            <td>{{ track["af"]["time_signature"] }}</td>
-        <td>
-            {% if track.in_working_playlist is true %}
-                already in there
-            {% else %}
-                <form action="{{ url_for("playlist_from_playlist", playlist_id=playlist.id) }}" method="post" id="form{{ track.id }}">
-                <input type="hidden" name="add_track_id" value="{{ track.id }}"/>
-                </form>
-                <a href="#" onclick="document.getElementById('form{{ track.id }}').submit()">add</a>
-            {% endif %}
-        </td>
-        </tr>
-    {% endfor %}
-</table>
+    {% include "from_playlist_table.html" %}
+{% endblock %}
+{% block script %}
+    {{ super() }}
+    <script>
+        function addTrackToWorkingPlaylist(track_id) {
+            tooltipList.forEach((tooltip) => {
+                tooltip.hide();
+            });
+            axios.post("{{ url_for("playlist_from_playlist", playlist_id=playlist.id) }}", {
+                track_id: track_id
+            }).then(function (response) {
+                document.getElementById("from_playlist_table").innerHTML = response.data;
+                tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+            })
+        }
+
+    </script>
 {% endblock %}
