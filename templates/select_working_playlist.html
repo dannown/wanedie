@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}select playlist{% endblock %}
+{% block body %}
+    <p>Select a playlist to work on.</p>
+    <p>Create a <a href="{{ url_for("new_playlist") }}">new playlist</a></p>
+    
+<ul>
+{% for playlist in playlists %}
+    <li><a href="{{ url_for("set_working_playlist", playlist_id=playlist.id) }}">{{ playlist["name"] }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        td {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+{% block header %}
+    {% if g.working_playlist is defined %}
+    Working on playlist: {{ g.working_playlist.name }}. <a href="{{ url_for("unset_working_playlist") }}">unset</a>
+    {% endif %}
+{% endblock %}
+{% block body %}{% endblock %}
+</body>
+</html>
