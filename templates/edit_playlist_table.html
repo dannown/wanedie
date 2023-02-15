@@ -8,6 +8,7 @@
         <th>energy</th>
         <th>valence</th>
         <th>time signature</th>
+        <th>play</th>
         <th>Remove?</th>
     </tr>
     </thead>
@@ -27,9 +28,14 @@
             <td>{{ track["af"]["energy"] }}</td>
             <td>{{ track["af"]["valence"] }}</td>
             <td>{{ track["af"]["time_signature"] }}</td>
+        <td>
+                            <button onclick="playTrackNow('{{ track.id }}')"
+                   class="btn btn-success">play</button>
+
+        </td>
             <td>
-                <a href="#" onclick="removeTrackFromWorkingPlaylist('{{ track.id }}')"
-                   class="btn btn-primary">remove</a>
+                <button onclick="removeTrackFromWorkingPlaylist('{{ track.id }}')"
+                   class="btn btn-primary">remove</button>
             </td>
         </tr>
     {% endfor %}

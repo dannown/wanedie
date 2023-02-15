@@ -2,6 +2,11 @@
 {% block body %}
     <p>You can add tracks from <a href="{{ url_for("select_playlist_for_from_playlist") }}">other playlists</a>.</p>
     {% include "edit_playlist_table.html" %}
+    <div class="sticky-bottom" style="height:5px; width=5px;">
+        <div id="spotify-embed">Oh shoot</div>
+    </div>
+
+
 {% endblock %}
 {% block script %}
     {{ super() }}
@@ -13,5 +18,24 @@
                 document.getElementById("playlist_table").innerHTML = response.data;
             })
         }
+
+        function playTrackNow(track_id) {
+            embedController.loadUri("spotify:track:"+track_id);
+            embedController.play();
+        }
+
+        let embedController = undefined;
+        window.onSpotifyIframeApiReady = (IFrameAPI) => {
+            let iframe = document.getElementById('spotify-embed');
+            let options = {
+                'height': 100,
+                'width': 50,
+            };
+            let callback = (EmbedController) => {
+                embedController = EmbedController;
+            };
+            IFrameAPI.createController(iframe, options, callback);
+        };
+
     </script>
 {% endblock %}
