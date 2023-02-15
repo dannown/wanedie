@@ -2,9 +2,13 @@
 {% block title %}select playlist{% endblock %}
 {% block body %}
     <p>Select a playlist to add tracks from.</p>
-<ul>
-{% for playlist in playlists %}
-    <li><a href="{{ url_for("playlist_from_playlist", playlist_id=playlist.id) }}">{{ playlist["name"] }}</a></li>
-{% endfor %}
-</ul>
+    <div class="container">
+        {% for playlist in playlists %}
+            <div class="row ">
+                <div class="column"><a
+                        href="{{ url_for("playlist_from_playlist", playlist_id=playlist.id) }}">{{ playlist["name"] }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
